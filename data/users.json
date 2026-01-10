@@ -1,0 +1,19 @@
+[
+  {
+    "id": 1767874665735,
+    "name": "Kiran",
+    "email": "kiran@test.com",
+    "password": "1234"
+  },
+  {
+    "id": 1767942076801,
+    "name": "Kiran",
+    "password": "1234"
+  },
+  {
+    "id": 1767942457179,
+    "name": "Kiran",
+    "email": "kiran@tests.com",
+    "password": "1234"
+  }
+]
