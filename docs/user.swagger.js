@@ -1,6 +1,6 @@
 /**
  * @swagger
- * /users/register:
+ * /api/users/register:
  *   post:
  *     summary: Register a user
  *     tags: [Users]
@@ -14,14 +14,21 @@
  *               - name
  *               - email
  *               - password
+ *             properties:
+ *               name:
+ *                 type: string
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
  *     responses:
  *       201:
- *         description: User registered
+ *         description: User registered successfully
  */
 
 /**
  * @swagger
- * /users/login:
+ * /api/users/login:
  *   post:
  *     summary: Login user
  *     tags: [Users]
@@ -34,7 +41,13 @@
  *             required:
  *               - email
  *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *               password:
+ *                 type: string
  *     responses:
  *       200:
- *         description: Login successful
+ *         description: Login successful (JWT token returned)
  */
+

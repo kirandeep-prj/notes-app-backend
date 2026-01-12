@@ -1,11 +1,11 @@
-const { getAllNotes, saveNotes } = require("../models/noteModel");
-const catchAsync = require("../utils/catchAsync");
+const Note = require("../models/Note");
 const AppError = require("../utils/AppError");
+const catchAsync = require("../utils/catchAsync");
 const { logInfo } = require("../utils/logger");
 
-// GET all notes
+// GET all notes (user specific – JWT ready)
 exports.getNotes = catchAsync(async (req, res, next) => {
-  const notes = getAllNotes();
+  const notes = await Note.find({ user: req.user.id });
   res.json(notes);
 });
 
@@ -13,58 +13,55 @@ exports.getNotes = catchAsync(async (req, res, next) => {
 exports.createNote = catchAsync(async (req, res, next) => {
   const { title, content } = req.body;
 
-  const notes = getAllNotes();
-
-  const newNote = {
-    id: Date.now(),
+  const note = await Note.create({
     title,
     content,
-    createdAt: new Date()
-  };
+    user: req.user.id
+  });
 
-  notes.push(newNote);
-  saveNotes(notes);
+  logInfo(`Note created: ${note._id}`);
 
-  logInfo(`Note created: ID ${newNote.id}`);
-
-  res.status(201).json(newNote);
+  res.status(201).json(note);
 });
 
 // UPDATE note
 exports.updateNote = catchAsync(async (req, res, next) => {
-  const noteId = Number(req.params.id);
-  const { title, content } = req.body;
+  const note = await Note.findById(req.params.id);
 
-  const notes = getAllNotes();
-  const index = notes.findIndex(n => n.id === noteId);
-
-  if (index === -1) {
+  if (!note) {
     return next(new AppError("Note not found", 404));
   }
 
-  if (title) notes[index].title = title;
-  if (content) notes[index].content = content;
-  notes[index].updatedAt = new Date();
+  // ownership check
+  if (note.user.toString() !== req.user.id) {
+    return next(new AppError("Not authorized", 403));
+  }
 
-  saveNotes(notes);
-  logInfo(`Note updated: ID ${noteId}`);
+  note.title = req.body.title || note.title;
+  note.content = req.body.content || note.content;
 
-  res.json(notes[index]);
+  await note.save();
+
+  logInfo(`Note updated: ${note._id}`);
+
+  res.json(note);
 });
 
 // DELETE note
 exports.deleteNote = catchAsync(async (req, res, next) => {
-  const noteId = Number(req.params.id);
+  const note = await Note.findById(req.params.id);
 
-  const notes = getAllNotes();
-  const filteredNotes = notes.filter(n => n.id !== noteId);
-
-  if (notes.length === filteredNotes.length) {
+  if (!note) {
     return next(new AppError("Note not found", 404));
   }
 
-  saveNotes(filteredNotes);
-  logInfo(`Note deleted: ID ${noteId}`);
+  if (note.user.toString() !== req.user.id) {
+    return next(new AppError("Not authorized", 403));
+  }
+
+  await note.deleteOne();
+
+  logInfo(`Note deleted: ${note._id}`);
 
   res.json({ message: "Note deleted successfully" });
 });

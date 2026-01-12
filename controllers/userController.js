@@ -1,39 +1,35 @@
-const fs = require("fs");
-const path = require("path");
+const User = require("../models/User");
 const AppError = require("../utils/AppError");
 const catchAsync = require("../utils/catchAsync");
 const { logInfo } = require("../utils/logger");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
-const usersFile = path.join(__dirname, "../data/users.json");
-
-const getUsers = () => {
-  return JSON.parse(fs.readFileSync(usersFile, "utf-8"));
-};
-
-const saveUsers = (users) => {
-  fs.writeFileSync(usersFile, JSON.stringify(users, null, 2));
+// 🔐 helper to sign JWT
+const signToken = (userId) => {
+  return jwt.sign(
+    { id: userId },
+    process.env.JWT_SECRET,
+    { expiresIn: "1h" }
+  );
 };
 
 // ✅ REGISTER
 exports.register = catchAsync(async (req, res, next) => {
   const { name, email, password } = req.body;
 
-  const users = getUsers();
-
-  const userExists = users.find(u => u.email === email);
+  const userExists = await User.findOne({ email });
   if (userExists) {
     return next(new AppError("User already exists", 400));
   }
 
-  const newUser = {
-    id: Date.now(),
+  const hashedPassword = await bcrypt.hash(password, 12);
+
+  const user = await User.create({
     name,
     email,
-    password // plain for now (we’ll hash later)
-  };
-
-  users.push(newUser);
-  saveUsers(users);
+    password: hashedPassword
+  });
 
   logInfo(`User registered: ${email}`);
 
@@ -46,19 +42,22 @@ exports.register = catchAsync(async (req, res, next) => {
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
-  const users = getUsers();
-  const user = users.find(
-    u => u.email === email && u.password === password
-  );
-
+  const user = await User.findOne({ email });
   if (!user) {
     return next(new AppError("Invalid credentials", 401));
   }
+
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    return next(new AppError("Invalid credentials", 401));
+  }
+
+  const token = signToken(user._id);
 
   logInfo(`User logged in: ${email}`);
 
   res.json({
     message: "Login successful",
-    userId: user.id
+    token
   });
 });
