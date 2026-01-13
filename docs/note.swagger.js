@@ -2,37 +2,34 @@
  * @swagger
  * /api/notes:
  *   get:
- *     summary: Get all notes
+ *     summary: Get user notes (search + pagination)
  *     tags: [Notes]
  *     security:
  *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: keyword
+ *         schema:
+ *           type: string
+ *           example: meeting
+ *         description: Search notes by title or content
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           example: 1
+ *         description: Page number (default 1)
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           example: 5
+ *         description: Number of notes per page (default 5)
  *     responses:
  *       200:
- *         description: List of notes
- *
- *   post:
- *     summary: Create a new note
- *     tags: [Notes]
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - title
- *               - content
- *             properties:
- *               title:
- *                 type: string
- *               content:
- *                 type: string
- *     responses:
- *       201:
- *         description: Note created
+ *         description: List of user notes
  */
+
 
 /**
  * @swagger

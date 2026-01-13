@@ -10,7 +10,7 @@ const signToken = (userId) => {
   return jwt.sign(
     { id: userId },
     process.env.JWT_SECRET,
-    { expiresIn: "1h" }
+    { expiresIn: "3h" }
   );
 };
 
@@ -42,16 +42,15 @@ exports.register = catchAsync(async (req, res, next) => {
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
 
-  const user = await User.findOne({ email });
+  const user = await User.findOne({ email }).select("+password");
   if (!user) {
     return next(new AppError("Invalid credentials", 401));
   }
-
+  
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
     return next(new AppError("Invalid credentials", 401));
   }
-
   const token = signToken(user._id);
 
   logInfo(`User logged in: ${email}`);

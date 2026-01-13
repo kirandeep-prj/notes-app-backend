@@ -5,8 +5,32 @@ const { logInfo } = require("../utils/logger");
 
 // GET all notes (user specific – JWT ready)
 exports.getNotes = catchAsync(async (req, res, next) => {
-  const notes = await Note.find({ user: req.user.id });
-  res.json(notes);
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 5;
+  
+  const skip = (page - 1) * limit;
+
+  const keyword = req.query.keyword
+    ? {
+        $or: [
+          { title: { $regex: req.query.keyword, $options: "i" } },
+          { content: { $regex: req.query.keyword, $options: "i" } }
+        ]
+      }
+    : {};
+
+  const notes = await Note.find({ user: req.user.id,
+    ...keyword
+  })
+    .skip(skip)
+    .limit(limit)
+    .sort({ createdAt: -1 });
+
+  res.json({
+    page,
+    results: notes.length,
+    notes
+  });
 });
 
 // CREATE note
@@ -26,7 +50,10 @@ exports.createNote = catchAsync(async (req, res, next) => {
 
 // UPDATE note
 exports.updateNote = catchAsync(async (req, res, next) => {
-  const note = await Note.findById(req.params.id);
+ const note = await Note.findOne({
+    _id: req.params.id,
+    user: req.user.id
+  });
 
   if (!note) {
     return next(new AppError("Note not found", 404));
@@ -49,7 +76,10 @@ exports.updateNote = catchAsync(async (req, res, next) => {
 
 // DELETE note
 exports.deleteNote = catchAsync(async (req, res, next) => {
-  const note = await Note.findById(req.params.id);
+  const note = await Note.findOneAndDelete({
+    _id: req.params.id,
+    user: req.user.id
+  });
 
   if (!note) {
     return next(new AppError("Note not found", 404));

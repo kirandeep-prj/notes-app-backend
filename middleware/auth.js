@@ -1,10 +1,13 @@
 const jwt = require("jsonwebtoken");
-const AppError = require("../utils/AppError");
 const User = require("../models/User");
+const AppError = require("../utils/AppError");
+const catchAsync = require("../utils/catchAsync");
 
-exports.protect = async (req, res, next) => {
+// ✅ DEFINE auth FIRST
+const auth = catchAsync(async (req, res, next) => {
   let token;
 
+  // Get token from header
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")
@@ -13,16 +16,23 @@ exports.protect = async (req, res, next) => {
   }
 
   if (!token) {
-    return next(new AppError("Not logged in", 401));
+    return next(new AppError("You are not logged in", 401));
   }
 
+  // Verify token
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
+  // Check user
   const user = await User.findById(decoded.id);
   if (!user) {
     return next(new AppError("User no longer exists", 401));
   }
 
-  req.user = user;
+  // Attach user to request
+  req.user = { id: user._id };
+
   next();
-};
+});
+
+// ✅ EXPORT auth
+module.exports = auth;
