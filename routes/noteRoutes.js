@@ -3,15 +3,15 @@ const router = express.Router();
 
 const noteController = require("../controllers/noteController");
 const auth = require("../middleware/auth");
-
+const validate = require("../validators/validate");
 const {
-  validateCreateNote,
-  validateUpdateNote
-} = require("../validators/noteValidator");
+  createNoteSchema,
+  updateNoteSchema
+} = require("../validators/note.schema");
 
 router.get("/", auth, noteController.getNotes);
-router.post("/", auth, validateCreateNote, noteController.createNote);
-router.put("/:id", auth, validateUpdateNote, noteController.updateNote);
+router.post("/", auth, validate(createNoteSchema), noteController.createNote);
+router.put("/:id", auth, validate(updateNoteSchema), noteController.updateNote);
 router.delete("/:id", auth, noteController.deleteNote);
 
 module.exports = router;

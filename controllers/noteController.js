@@ -9,7 +9,7 @@ exports.getNotes = catchAsync(async (req, res, next) => {
   const limit = parseInt(req.query.limit) || 5;
   
   const skip = (page - 1) * limit;
-
+  //search
   const keyword = req.query.keyword
     ? {
         $or: [
@@ -18,13 +18,17 @@ exports.getNotes = catchAsync(async (req, res, next) => {
         ]
       }
     : {};
+  // Sorting
+  const sortField = req.query.sort || "createdAt";
+  const sortOrder = req.query.order === "asc" ? 1 : -1;
 
   const notes = await Note.find({ user: req.user.id,
     ...keyword
   })
+  .collation({ locale: "en", strength: 2 }) 
+  .sort({[sortField]: sortOrder})
     .skip(skip)
-    .limit(limit)
-    .sort({ createdAt: -1 });
+    .limit(limit);
 
   res.json({
     page,
