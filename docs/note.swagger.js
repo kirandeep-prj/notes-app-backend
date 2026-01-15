@@ -71,6 +71,24 @@
  *         description: Note created
  */
 
+
+/**
+ * @swagger
+ * /api/notes/admin/all:
+ *   get:
+ *     summary: Get all notes (Admin only)
+ *     tags: [Admin]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all notes (Admin access)
+ *       403:
+ *         description: Forbidden - not an admin
+ */
+
+
+
 /**
  * @swagger
  * /api/notes/{id}:

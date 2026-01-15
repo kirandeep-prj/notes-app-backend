@@ -21,6 +21,10 @@ const auth = catchAsync(async (req, res, next) => {
 
   // Verify token
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  req.user = {
+  id: decoded.id,
+  role: decoded.role
+};
 
   // Check user
   const user = await User.findById(decoded.id);
@@ -29,7 +33,7 @@ const auth = catchAsync(async (req, res, next) => {
   }
 
   // Attach user to request
-  req.user = { id: user._id };
+  req.user = { id: user._id , role: user.role};
 
   next();
 });

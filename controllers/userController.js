@@ -10,7 +10,7 @@ const signToken = (userId) => {
   return jwt.sign(
     { id: userId },
     process.env.JWT_SECRET,
-    { expiresIn: "3h" }
+    { expiresIn: "6d" }
   );
 };
 
@@ -51,7 +51,13 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!isMatch) {
     return next(new AppError("Invalid credentials", 401));
   }
-  const token = signToken(user._id);
+  console.log("role", user.role)
+  const token = jwt.sign(
+  { id: user._id, role: user.role },  // <-- IMPORTANT
+  process.env.JWT_SECRET,
+  { expiresIn: "7d" }
+);
+
 
   logInfo(`User logged in: ${email}`);
 
