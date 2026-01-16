@@ -5,6 +5,7 @@ const { logInfo } = require("../utils/logger");
 
 // GET all notes (user specific – JWT ready)
 exports.getNotes = catchAsync(async (req, res, next) => {
+  //paggination
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 5;
   
