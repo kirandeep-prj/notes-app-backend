@@ -24,7 +24,7 @@ exports.getNotes = catchAsync(async (req, res, next) => {
 
   // Filter by pinned notes (optional)
   const pinnedFilter =
-    req.query.isPinned === "true" ? { isPinned: true } : {};
+  req.query.isPinned === "true" ? { pinned: true } : {};
 
   // Sorting
   const sortField = req.query.sort || "createdAt";
@@ -85,23 +85,29 @@ exports.createNote = catchAsync(async (req, res, next) => {
 
 // UPDATE note
 exports.updateNote = catchAsync(async (req, res, next) => {
- const note = await Note.findOne({
-    _id: req.params.id,
-    user: req.user.id,
-  });
+ // Find note (allow owner OR shared-with users)
+   const note = await Note.findById(req.params.id);
 
   if (!note) {
     return next(new AppError("Note not found", 404));
   }
 
   // ownership check
-  if (note.user.toString() !== req.user.id) {
-    return next(new AppError("Not authorized", 403));
-  }
+ // Check if user is OWNER
+const isOwner = note.user.toString() === req.user.id;
+
+// Check if note is shared with this user with edit permission
+const sharedAccess = note.sharedWith.find(
+  s => s.user.toString() === String(req.user.id || req.user._id) && s.canEdit === true
+);
+
+if (!isOwner && !sharedAccess) {
+  return next(new AppError("Not authorized to edit this note", 403));
+}
 
   note.title = req.body.title || note.title;
   note.content = req.body.content || note.content;
-   note.pinned = req.body.pinned !== undefined ? req.body.pinned : note.pinned;
+  note.pinned = req.body.pinned !== undefined ? req.body.pinned : note.pinned;
   note.tags = req.body.tags || note.tags;
   note.reminderAt = req.body.reminderAt || note.reminderAt;
 
@@ -153,10 +159,15 @@ exports.shareNote = catchAsync(async (req, res, next) => {
     (s) => s.user.toString() === userId
   );
 
+  if (alreadyShared) {
+    return next(new AppError("Note already shared", 400));
+  }
+
+
   if (!alreadyShared) {
     note.sharedWith.push({
       user: userId,
-      canEdit: canEdit || false,
+     canEdit: canEdit ?? false,
     });
   }
 

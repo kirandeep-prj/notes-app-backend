@@ -33,14 +33,16 @@ const noteSchema = new mongoose.Schema(
     },
 
     sharedWith: [
-      {
-        user: {
-          type: mongoose.Schema.ObjectId,
-          ref: "User",
-        },
-        canEdit: { type: Boolean, default: false }
-      }
-    ],
+  {
+    user: {
+      type: mongoose.Schema.ObjectId,
+      ref: "User",
+      required: true
+    },
+    canEdit: { type: Boolean, default: false }
+  }
+],
+
   },
   {
     timestamps: true

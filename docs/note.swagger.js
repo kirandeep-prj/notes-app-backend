@@ -192,38 +192,53 @@
 /**
  * @swagger
  * /api/notes/{id}/share:
- *   post:
- *     summary: Share a note with another user
- *     tags: [Notes]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
+ * post:
+ * summary: Share a note with another user
+ * tags: [Notes]
+ * security:
+ * - bearerAuth: []
+ * parameters:
+ * - in: path
+ *   name: id
+ *   required: true
+ *   schema:
+ *     type: string
+ *   description: Note ID
+ * requestBody:
+ *   required: true
+ *   content:
+ *     application/json:
+ *       schema:
+ *         type: object
+ *         required:
+ *           - userId
+ *           - canEdit
+ *         properties:
+ *           userId:
+ *             type: string
+ *             example: "65a1b2c3d4e5f6a7b8c9d0e1"
+ *           canEdit:
+ *             type: boolean
+ *             example: true
+ *             description: "Set true to allow the shared user to edit the note"
+ * responses:
+ *   200:
+ *     description: Note shared successfully
+ *     content:
+ *       application/json:
  *         schema:
- *           type: string
- *         description: Note ID
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - userId
- *             properties:
- *               userId:
- *                 type: string
- *                 example: "65a1b2c3d4e5f6a7b8c9d0e1"
- *               canEdit:
- *                 type: boolean
- *                 example: false
- *     responses:
- *       200:
- *         description: Note shared successfully
- *       404:
- *         description: Note not found
+ *           type: object
+ *           properties:
+ *             status:
+ *               type: string
+ *               example: "success"
+ *             message:
+ *               type: string
+ *               example: "Note shared successfully"
+ *   400:
+ *     description: Note already shared
+ *   404:
+ *     description: Note not found
  */
 /**
  * @swagger
