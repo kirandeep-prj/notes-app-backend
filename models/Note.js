@@ -17,7 +17,30 @@ const noteSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true
-    }
+    },
+    pinned: {
+      type: Boolean,
+      default: false,
+    },
+
+    tags: {
+      type: [String], // array of strings
+      default: [],
+    },
+
+    reminderAt: {
+      type: Date,
+    },
+
+    sharedWith: [
+      {
+        user: {
+          type: mongoose.Schema.ObjectId,
+          ref: "User",
+        },
+        canEdit: { type: Boolean, default: false }
+      }
+    ],
   },
   {
     timestamps: true

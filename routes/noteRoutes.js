@@ -19,6 +19,12 @@ router.get("/", auth, noteController.getNotes);
 router.post("/", auth, validate(createNoteSchema), noteController.createNote);
 router.put("/:id", auth, validate(updateNoteSchema), noteController.updateNote);
 router.delete("/:id", auth, noteController.deleteNote);
+router.post("/:id/share", auth, noteController.shareNote);
+router.patch("/:id/pin", auth, noteController.togglePinNote);
+router.get("/shared/by-me", auth, noteController.getNotesSharedByMe);
+router.get("/shared", auth, noteController.getNotesSharedWithMe);
+
+
 
 
 
