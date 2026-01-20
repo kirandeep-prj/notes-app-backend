@@ -53,7 +53,111 @@
  *     responses:
  *       200:
  *         description: List of user notes
- *
+ */
+/**
+ * @swagger
+ * /api/notes/shared/by-me:
+ *   get:
+ *     summary: Get notes that I have shared with other users
+ *     tags: [Notes]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of notes shared by the logged-in user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "success"
+ *                 results:
+ *                   type: integer
+ *                   example: 2
+ *                 notes:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                       title:
+ *                         type: string
+ *                       content:
+ *                         type: string
+ *                       sharedWith:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             user:
+ *                               type: string
+ *                             canEdit:
+ *                               type: boolean
+ *                               example: false
+ *       401:
+ *         description: Unauthorized (no token)
+ */
+/**
+ * @swagger
+ * /api/notes/shared:
+ *   get:
+ *     summary: Get notes shared with the logged-in user
+ *     tags: [Notes]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of notes shared with the user
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "success"
+ *                 results:
+ *                   type: integer
+ *                   example: 2
+ *                 notes:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       _id:
+ *                         type: string
+ *                       title:
+ *                         type: string
+ *                       content:
+ *                         type: string
+ *                       user:
+ *                         type: object
+ *                         properties:
+ *                           _id:
+ *                             type: string
+ *                           name:
+ *                             type: string
+ *                           email:
+ *                             type: string
+ *                       sharedWith:
+ *                         type: array
+ *                         items:
+ *                           type: object
+ *                           properties:
+ *                             user:
+ *                               type: string
+ *                             canEdit:
+ *                               type: boolean
+ *                               example: false
+ *       401:
+ *         description: Unauthorized (no token)
+ */
+/**
+ * @swagger
+ * /api/notes:
  *   post:
  *     summary: Create a new note
  *     tags: [Notes]
@@ -88,20 +192,6 @@
  *     responses:
  *       201:
  *         description: Note created
- */
-/**
- * @swagger
- * /api/notes/admin/all:
- *   get:
- *     summary: Get all notes (Admin only)
- *     tags: [Admin]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: List of all notes (Admin access)
- *       403:
- *         description: Forbidden - not an admin
  */
 /**
  * @swagger
@@ -192,65 +282,38 @@
 /**
  * @swagger
  * /api/notes/{id}/share:
- * post:
- * summary: Share a note with another user
- * tags: [Notes]
- * security:
- * - bearerAuth: []
- * parameters:
- * - in: path
- *   name: id
- *   required: true
- *   schema:
- *     type: string
- *   description: Note ID
- * requestBody:
- *   required: true
- *   content:
- *     application/json:
- *       schema:
- *         type: object
- *         required:
- *           - userId
- *           - canEdit
- *         properties:
- *           userId:
- *             type: string
- *             example: "65a1b2c3d4e5f6a7b8c9d0e1"
- *           canEdit:
- *             type: boolean
- *             example: true
- *             description: "Set true to allow the shared user to edit the note"
- * responses:
- *   200:
- *     description: Note shared successfully
- *     content:
- *       application/json:
+ *   post:
+ *     summary: Share a note with another user
+ *     tags: [Notes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
  *         schema:
- *           type: object
- *           properties:
- *             status:
- *               type: string
- *               example: "success"
- *             message:
- *               type: string
- *               example: "Note shared successfully"
- *   400:
- *     description: Note already shared
- *   404:
- *     description: Note not found
- */
-/**
- * @swagger
- * /api/notes/shared:
- *   get:
- *     summary: Get notes shared with the logged-in user
- *     tags: [Notes]
- *     security:
- *       - bearerAuth: []
+ *           type: string
+ *         description: Note ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - userId
+ *               - canEdit
+ *             properties:
+ *               userId:
+ *                 type: string
+ *                 example: "65a1b2c3d4e5f6a7b8c9d0e1"
+ *               canEdit:
+ *                 type: boolean
+ *                 example: true
+ *                 description: "Set true to allow the shared user to edit the note"
  *     responses:
  *       200:
- *         description: List of notes shared with the user
+ *         description: Note shared successfully
  *         content:
  *           application/json:
  *             schema:
@@ -259,85 +322,13 @@
  *                 status:
  *                   type: string
  *                   example: "success"
- *                 results:
- *                   type: integer
- *                   example: 2
- *                 notes:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       _id:
- *                         type: string
- *                       title:
- *                         type: string
- *                       content:
- *                         type: string
- *                       user:
- *                         type: object
- *                         properties:
- *                           _id:
- *                             type: string
- *                           name:
- *                             type: string
- *                           email:
- *                             type: string
- *                       sharedWith:
- *                         type: array
- *                         items:
- *                           type: object
- *                           properties:
- *                             user:
- *                               type: string
- *                             canEdit:
- *                               type: boolean
- *                               example: false
- *       401:
- *         description: Unauthorized (no token)
- */
-/**
- * @swagger
- * /api/notes/shared/by-me:
- *   get:
- *     summary: Get notes that I have shared with other users
- *     tags: [Notes]
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description: List of notes shared by the logged-in user
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 status:
+ *                 message:
  *                   type: string
- *                   example: "success"
- *                 results:
- *                   type: integer
- *                   example: 2
- *                 notes:
- *                   type: array
- *                   items:
- *                     type: object
- *                     properties:
- *                       _id:
- *                         type: string
- *                       title:
- *                         type: string
- *                       content:
- *                         type: string
- *                       sharedWith:
- *                         type: array
- *                         items:
- *                           type: object
- *                           properties:
- *                             user:
- *                               type: string
- *                             canEdit:
- *                               type: boolean
- *                               example: false
- *       401:
- *         description: Unauthorized (no token)
+ *                   example: "Note shared successfully"
+ *       400:
+ *         description: Note already shared
+ *       404:
+ *         description: Note not found
  */
+
+

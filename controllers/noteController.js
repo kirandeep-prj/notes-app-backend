@@ -47,24 +47,6 @@ exports.getNotes = catchAsync(async (req, res, next) => {
 });
 
 
-// ONLY ADMIN CAN ACCESS THIS
-exports.getAllNotesForAdmin = async (req, res, next) => {
-  try {
-    const notes = await Note.find().populate("user", "name email");
-
-    res.status(200).json({
-      success: true,
-      count: notes.length,
-      data: notes,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
 // CREATE note
 exports.createNote = catchAsync(async (req, res, next) => {
   const {  title, content, tags, reminderAt, pinned } = req.body;
@@ -163,14 +145,12 @@ exports.shareNote = catchAsync(async (req, res, next) => {
     return next(new AppError("Note already shared", 400));
   }
 
-
   if (!alreadyShared) {
     note.sharedWith.push({
       user: userId,
      canEdit: canEdit ?? false,
     });
   }
-
 
   await note.save();
 
@@ -229,4 +209,6 @@ exports.getNotesSharedWithMe = catchAsync(async (req, res, next) => {
     notes,
   });
 });
+
+
 

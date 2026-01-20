@@ -5,7 +5,7 @@ const noteController = require("../controllers/noteController");
 const auth = require("../middleware/auth");
 const validate = require("../validators/validate");
 const restrictTo = require("../middleware/restrictTo");
-const { getAllNotesForAdmin } = require("../controllers/noteController");
+const adminController =require("../controllers/adminController");
 
 
 const {
@@ -13,7 +13,12 @@ const {
   updateNoteSchema
 } = require("../validators/note.schema");
 
-router.get("/admin/all", auth, restrictTo("admin"), getAllNotesForAdmin);
+router.get("/admin/all", auth, restrictTo("admin"),adminController.getAllNotesForAdmin);
+router.get("/admin/shared-map",auth,restrictTo("admin"),adminController.adminSharedNotesMap);
+router.delete("/admin/:id", auth, restrictTo("admin"), adminController.adminDeleteNote);
+router.put("/admin/:id", auth, restrictTo("admin"), adminController.updateNoteByAdmin);
+router.get("/admin/:id", auth, restrictTo("admin"), adminController.adminGetSingleNote);
+router.get("/admin/user/:userId/notes",auth,restrictTo("admin"),adminController.adminGetNotesByUser);
 
 router.get("/", auth, noteController.getNotes);
 router.get("/shared/by-me", auth, noteController.getNotesSharedByMe);
@@ -24,10 +29,6 @@ router.post("/:id/share", auth, noteController.shareNote);
 router.put("/:id", auth, validate(updateNoteSchema), noteController.updateNote);
 router.patch("/:id/pin", auth, noteController.togglePinNote);
 router.delete("/:id", auth, noteController.deleteNote);
-
-
-
-
 
 
 module.exports = router;
