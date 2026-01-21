@@ -14,103 +14,164 @@ documented**.
 
 ## 🚀 Features
 
--   RESTful APIs for Notes and Users
--   Clean and scalable folder structure (MVC pattern)
--   Middleware‑based request validation
--   Centralized error handling
--   Custom logger (console + file logging)
--   Swagger API documentation
--   File‑based data storage using JSON
--   Maintainable and production‑style backend flow
+- User authentication with **JWT**
+- Role‑based access control (**Admin / User**)
+- Secure password hashing with **bcrypt**
+- Password change invalidates old tokens
+- CRUD operations for notes
+- User profile management
+- Input validation using schemas
+- Centralized error handling
+- Clean folder architecture
 
 ------------------------------------------------------------------------
 
 ## 🧱 Project Structure
 
 ``` bash
-backend/
+notes-app-backend/
 │
 ├── config/
-│ └── swagger.js
+│ └── db.js # MongoDB connection
+│
+├── models/
+│ ├── User.js # User schema & hooks
+│ └── Note.js # Note schema
 │
 ├── controllers/
-│ ├── noteController.js
-│ └── userController.js
-│
-├── routes/
-│ ├── noteRoutes.js
-│ └── userRoutes.js
-│
-├── validators/
-│ ├── noteValidator.js
-│ └── userValidator.js
+│ ├── adminController.js # Admin-only operations
+│ ├── userController.js # Auth / user actions
+│ ├── profileController.js # Profile & password management
+│ └── noteController.js # Notes CRUD
 │
 ├── middleware/
-│ └── logger.js
+│ ├── auth.js # JWT authentication
+│ ├── restrictTo.js # Role-based access
+│ ├── errorHandler.js # Global error handler
+│ └── validateNote.js # Note ownership validation
+│
+├── routes/
+│ ├── userRoutes.js
+│ ├── profileRoutes.js
+│ └── noteRoutes.js
+│
+├── validators/
+│ ├── user.schema.js # User validation schemas
+│ ├── note.schema.js # Note validation schemas
+│ └── validate.js # Generic validation middleware
 │
 ├── utils/
-│ ├── AppError.js
-│ ├── catchAsync.js
-│ └── logger.js
+│ ├── AppError.js # Custom error class
+│ └── catchAsync.js # Async error wrapper
 │
-├── data/
-│ ├── notes.json
-│ └── users.json
-│
-├── server.js
-└── README.md
+└── server.js # Server entry point
 ```
 
 ------------------------------------------------------------------------
 
-## 🛠 Tech Stack
+## 🧠 Architecture Principles
 
--   Node.js
--   Express.js
--   Swagger
--   Postman
--   File System (fs)
+- **Models** → Data & database logic only  
+- **Controllers** → Business logic  
+- **Middleware** → Request flow & authorization  
+- **Validators** → Input validation only  
+- **Utils** → Reusable helpers  
+- **Routes** → Endpoint definitions only  
+
+This separation ensures:
+- Easy debugging
+- Better scalability
+- Clean codebase
 
 ------------------------------------------------------------------------
 
-## ⚙️ Running the Project Locally
+## 🔐 Authentication Flow
+
+1. User logs in → JWT issued
+2. JWT sent in `Authorization` header:
+    Bearer <token>
+3. `auth` middleware:
+- Verifies token
+- Checks user existence
+- Invalidates token if password was changed
+4. `restrictTo` middleware:
+- Allows role-based access (e.g. admin only)
+
+---
+
+## 🔁 Password Security
+
+- Passwords are hashed using **bcrypt**
+- Password confirmation is never stored
+- Password change updates `passwordChangedAt`
+- Old JWT tokens become invalid automatically
+
+---
+
+## 🧪 Validation
+
+- Request body validation handled using schemas
+- Generic `validate(schema)` middleware
+- Clean error responses for invalid input
+
+---
+
+## 🛑 Error Handling
+
+- Centralized global error handler
+- Custom `AppError` class for consistent errors
+- Async errors handled via `catchAsync`
+
+---
+
+## ⚙️ Environment Variables
+
+Create a `.env` file in the root:
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+JWT_EXPIRES_IN=7d
+
+
+---
+
+## ▶️ Running the Project
 
 ### Install dependencies
-
     npm install
 
-### Start the server
+### Start development server
+    npm run dev
 
+### Start production server
     npm start
 
-Server runs at: http://localhost:3000
 
-------------------------------------------------------------------------
+---
 
-## 📘 API Documentation
+## 🧩 API Testing
 
-Swagger UI: http://localhost:3000/api-docs
+- APIs can be tested using **Swagger**, **Postman**, or **Insomnia**
+- Always include `Authorization` header for protected routes
 
-------------------------------------------------------------------------
+---
 
-## 📌 API Endpoints
+## 📌 Status
 
-### Notes
+✅ Backend completed  
+✅ Clean architecture  
+✅ Production‑ready  
+✅ Frontend‑ready  
 
-GET /notes\
-POST /notes\
-PUT /notes/:id\
-DELETE /notes/:id
+---
 
-### Users
+## 👩‍💻 Author
 
-POST /users/register\
-POST /users/login
+**Kirandeep**  
+Backend Developer | MERN Stack
 
-------------------------------------------------------------------------
+---
 
-## 🎯 Learning Objective
+## 📄 License
 
-This project helps understand: - Backend architecture - Middleware
-flow - Error handling - Logging - API documentation
-
+This project is licensed under the MIT License.

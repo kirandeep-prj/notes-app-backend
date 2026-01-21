@@ -8,6 +8,15 @@ const swaggerOptions = {
       version: "1.0.0",
       description: "Notes App Backend with JWT Authentication"
     },
+
+    tags: [
+      { name: "Users"},
+      { name: "Profile" },
+      { name: "Notes"},
+      { name: "Admin-User"},
+      { name: "Admin-Notes" }
+    ],
+
     components: {
       securitySchemes: {
         bearerAuth: {
@@ -17,9 +26,10 @@ const swaggerOptions = {
         }
       }
     },
-       servers: [
+
+    servers: [
       {
-         url: `http://localhost:${process.env.PORT}`
+        url: `http://localhost:${process.env.PORT}`
       }
     ]
   },
@@ -27,4 +37,3 @@ const swaggerOptions = {
 };
 
 module.exports = swaggerJsDoc(swaggerOptions);
-

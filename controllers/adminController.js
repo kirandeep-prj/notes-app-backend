@@ -2,6 +2,7 @@ const Note = require("../models/Note");
 const AppError = require("../utils/AppError");
 const catchAsync = require("../utils/catchAsync");
 const { logInfo } = require("../utils/logger");
+const User = require("../models/User")
 
 // ONLY ADMIN CAN ACCESS THIS
 exports.getAllNotesForAdmin = catchAsync(async (req, res, next) => {
@@ -160,10 +161,12 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
     return next(new AppError("User not found", 404));
   }
 
+  // 🔥 ALSO delete all this user's notes
+  await Note.deleteMany({ user: req.params.id });
+
   res.status(200).json({
     status: "success",
-    message: "User deleted successfully",
+    message: "User and their notes deleted successfully",
   });
 });
-
 

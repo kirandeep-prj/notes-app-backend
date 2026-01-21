@@ -5,6 +5,7 @@ const app = express();
 
 const noteRoutes = require("./routes/noteRoutes");
 const userRoutes = require("./routes/userRoutes");
+const profileRoutes = require("./routes/profile.routes");
 const errorHandler = require("./middleware/errorHandler");
 const swaggerUI = require("swagger-ui-express");
 const swaggerSpec = require("./config/swagger");
@@ -22,6 +23,8 @@ app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec));
 // Routes (match Swagger paths)
 app.use("/api/users", userRoutes);
 app.use("/api/notes", noteRoutes);
+app.use("/api/profile", profileRoutes);
+
 
 // Test route
 app.get("/", (req, res) => {
