@@ -24,6 +24,10 @@
  *     responses:
  *       201:
  *         description: User registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SuccessResponse'
  */
 
 /**
@@ -48,7 +52,16 @@
  *                 type: string
  *     responses:
  *       200:
- *         description: Login successful (JWT token returned)
+ *         description: Login successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 token:
+ *                   type: string
  */
 
 /**
@@ -68,14 +81,20 @@
  *             properties:
  *               email:
  *                 type: string
- *                 example: user@gmail.com
  *     responses:
  *       200:
  *         description: Password reset link generated
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SuccessResponse'
  *       404:
  *         description: User not found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
-
 
 /**
  * @swagger
@@ -102,16 +121,19 @@
  *             properties:
  *               password:
  *                 type: string
- *                 example: "newPassword@123"
  *               passwordConfirm:
  *                 type: string
- *                 example: "newPassword@123"
  *     responses:
  *       200:
  *         description: Password reset successful
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/SuccessResponse'
  *       400:
  *         description: Invalid or expired token
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  */
-
-
-

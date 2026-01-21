@@ -1,4 +1,3 @@
-
 /**
  * @swagger
  * /api/notes/admin/all:
@@ -9,10 +8,11 @@
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: List of all notes (Admin access)
+ *         description: List of all notes
  *       403:
- *         description: Forbidden - not an admin
+ *         description: Forbidden - Admin only
  */
+
 /**
  * @swagger
  * /api/notes/admin/{id}:
@@ -38,20 +38,19 @@
  *               properties:
  *                 status:
  *                   type: string
- *                   example: "success"
  *                 message:
  *                   type: string
- *                   example: "Note deleted by admin"
  *       404:
  *         description: Note not found
  *       403:
- *         description: Forbidden - not an admin
+ *         description: Forbidden
  */
+
 /**
  * @swagger
  * /api/notes/admin/{id}:
  *   put:
- *     summary: Admin can update any note
+ *     summary: Update any note (Admin only)
  *     tags: [Admin-Notes]
  *     security:
  *       - bearerAuth: []
@@ -61,7 +60,6 @@
  *         required: true
  *         schema:
  *           type: string
- *         description: Note ID
  *     requestBody:
  *       required: true
  *       content:
@@ -87,16 +85,15 @@
  *         description: Note updated by admin
  *       404:
  *         description: Note not found
- *       401:
- *         description: Unauthorized
  *       403:
- *         description: Forbidden (not admin)
+ *         description: Forbidden
  */
+
 /**
  * @swagger
  * /api/notes/admin/{id}:
  *   get:
- *     summary: Admin - Get single note by ID
+ *     summary: Get single note by ID (Admin)
  *     tags: [Admin-Notes]
  *     security:
  *       - bearerAuth: []
@@ -106,20 +103,18 @@
  *         required: true
  *         schema:
  *           type: string
- *         description: Note ID
  *     responses:
  *       200:
- *         description: Single note details
+ *         description: Note details
  *       404:
  *         description: Note not found
- *       401:
- *         description: Unauthorized
  */
+
 /**
  * @swagger
  * /api/notes/admin/shared-map:
  *   get:
- *     summary: Admin - View who shared which note with whom
+ *     summary: View note sharing map (Admin)
  *     tags: [Admin-Notes]
  *     security:
  *       - bearerAuth: []
@@ -133,38 +128,21 @@
  *               properties:
  *                 status:
  *                   type: string
- *                   example: "success"
  *                 results:
  *                   type: integer
- *                   example: 2
  *                 data:
  *                   type: array
  *                   items:
  *                     type: object
- *                     properties:
- *                       noteId:
- *                         type: string
- *                       title:
- *                         type: string
- *                       owner:
- *                         type: object
- *                       sharedWith:
- *                         type: array
- *                         items:
- *                           type: object
- *                           properties:
- *                             user:
- *                               type: object
- *                             canEdit:
- *                               type: boolean
  *       401:
  *         description: Unauthorized
  */
+
 /**
  * @swagger
  * /api/notes/admin/user/{userId}/notes:
  *   get:
- *     summary: Admin - Get all notes of a specific user
+ *     summary: Get all notes of a specific user (Admin)
  *     tags: [Admin-Notes]
  *     security:
  *       - bearerAuth: []
@@ -176,22 +154,22 @@
  *           type: string
  *     responses:
  *       200:
- *         description: List of notes of the user
+ *         description: User notes list
  *       404:
  *         description: No notes found
  */
+
 /**
  * @swagger
  * /api/users/admin/users:
  *   get:
- *     tags:
- *       - Admin-User
- *     summary: "Get all users (Admin only)"
+ *     summary: Get all users (Admin only)
+ *     tags: [Admin-User]
  *     security:
  *       - bearerAuth: []
  *     responses:
  *       200:
- *         description: List of all users
+ *         description: List of users
  *         content:
  *           application/json:
  *             schema:
@@ -205,23 +183,13 @@
  *                   type: array
  *                   items:
  *                     type: object
- *                     properties:
- *                       _id:
- *                         type: string
- *                       name:
- *                         type: string
- *                       email:
- *                         type: string
- *                       role:
- *                         type: string
- *                       createdAt:
- *                         type: string
  */
+
 /**
  * @swagger
  * /api/users/admin/users/{id}/role:
  *   patch:
- *     summary: Admin - Update user role
+ *     summary: Update user role (Admin)
  *     tags: [Admin-User]
  *     security:
  *       - bearerAuth: []
@@ -237,21 +205,23 @@
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - role
  *             properties:
  *               role:
  *                 type: string
- *                 example: "admin"
  *     responses:
  *       200:
- *         description: Role updated successfully
+ *         description: Role updated
  *       404:
  *         description: User not found
  */
+
 /**
  * @swagger
  * /api/users/admin/users/{id}:
  *   delete:
- *     summary: Admin - Delete a user
+ *     summary: Delete a user (Admin)
  *     tags: [Admin-User]
  *     security:
  *       - bearerAuth: []
@@ -263,7 +233,7 @@
  *           type: string
  *     responses:
  *       200:
- *         description: User deleted successfully
+ *         description: User deleted
  *       404:
  *         description: User not found
  */

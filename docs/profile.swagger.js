@@ -9,7 +9,17 @@
  *     responses:
  *       200:
  *         description: User profile
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 user:
+ *                   type: object
  */
+
 /**
  * @swagger
  * /api/profile/me:
@@ -27,14 +37,22 @@
  *             properties:
  *               name:
  *                 type: string
- *                 example: "New Name"
  *               email:
  *                 type: string
- *                 example: "newemail@example.com"
  *     responses:
  *       200:
  *         description: Profile updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 user:
+ *                   type: object
  */
+
 /**
  * @swagger
  * /api/profile/me/password:
@@ -49,32 +67,56 @@
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - currentPassword
+ *               - newPassword
+ *               - passwordConfirm
  *             properties:
  *               currentPassword:
  *                 type: string
- *                 example: "oldPass@123"
  *               newPassword:
  *                 type: string
- *                 example: "NewPass@123"
  *               passwordConfirm:
  *                 type: string
- *                 example: "NewPass@123"
  *     responses:
  *       200:
  *         description: Password updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
  *       401:
  *         description: Current password incorrect
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  */
+
 /**
  * @swagger
  * /api/profile/logout:
  *   post:
- *     tags:
- *       - Profile
  *     summary: Logout user
+ *     tags: [Profile]
  *     responses:
  *       200:
  *         description: Logged out successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
  */
-
-
