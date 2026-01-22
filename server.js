@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const express = require("express");
 const app = express();
+const cors = require("cors");
 
 const noteRoutes = require("./routes/noteRoutes");
 const userRoutes = require("./routes/userRoutes");
@@ -16,6 +17,15 @@ connectDB();
 
 // Body parser
 app.use(express.json());
+
+//cors of froentend
+app.use(
+  cors({
+    origin:process.env.FRONTEND,
+    credentials: true,
+  })
+);
+
 
 // Swagger (BEFORE routes & error handler)
 app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(swaggerSpec));

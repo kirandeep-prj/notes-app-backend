@@ -21,6 +21,8 @@
  *                 type: string
  *               password:
  *                 type: string
+ *               passwordConfirm:
+ *                 type: string
  *     responses:
  *       201:
  *         description: User registered successfully

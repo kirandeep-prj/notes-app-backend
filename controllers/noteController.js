@@ -73,10 +73,11 @@ exports.updateNote = catchAsync(async (req, res, next) => {
   if (!note) {
     return next(new AppError("Note not found", 404));
   }
-
   // ownership check
  // Check if user is OWNER
-const isOwner = note.user.toString() === req.user.id;
+
+  // OWNER
+  const isOwner = note.user.toString() === req.user.id.toString();
 
 // Check if note is shared with this user with edit permission
 const sharedAccess = note.sharedWith.find(
@@ -111,7 +112,7 @@ exports.deleteNote = catchAsync(async (req, res, next) => {
     return next(new AppError("Note not found", 404));
   }
 
-  if (note.user.toString() !== req.user.id) {
+  if (note.user.toString() !== req.user.id.toString()) {
     return next(new AppError("Not authorized", 403));
   }
 
